@@ -29,8 +29,7 @@ import de.rogallab.mobile.R
 import de.rogallab.mobile.domain.utilities.logInfo
 import de.rogallab.mobile.ui.navigation.NavScreen
 import de.rogallab.mobile.ui.people.composables.InputNameMailPhone
-import de.rogallab.mobile.ui.people.composables.ShowErrorMessage
-import kotlinx.coroutines.launch
+import de.rogallab.mobile.ui.people.composables.showErrorMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,7 +118,7 @@ fun PersonInputScreen(
    viewModel.errorMessage?.let {
       if(viewModel.errorFrom == "PersonInputScreen" ) {
          LaunchedEffect(it) {
-            ShowErrorMessage(
+            showErrorMessage(
                snackbarHostState = snackbarHostState,
                errorMessage = it,
                actionLabel = "ToDo",

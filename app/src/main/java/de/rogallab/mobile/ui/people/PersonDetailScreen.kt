@@ -33,7 +33,7 @@ import de.rogallab.mobile.domain.utilities.logDebug
 import de.rogallab.mobile.domain.utilities.logInfo
 import de.rogallab.mobile.ui.navigation.NavScreen
 import de.rogallab.mobile.ui.people.composables.InputNameMailPhone
-import de.rogallab.mobile.ui.people.composables.ShowErrorMessage
+import de.rogallab.mobile.ui.people.composables.showErrorMessage
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -142,7 +142,7 @@ fun PersonDetailScreen(
    viewModel.errorMessage?.let {
       if (viewModel.errorFrom == "PersonDetailScreen") {
          LaunchedEffect(it) {
-            ShowErrorMessage(
+            showErrorMessage(
                snackbarHostState = snackbarHostState,
                errorMessage = it,
                actionLabel = "Abbrechen",

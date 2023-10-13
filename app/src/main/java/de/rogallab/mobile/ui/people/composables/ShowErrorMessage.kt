@@ -3,19 +3,16 @@ package de.rogallab.mobile.ui.people.composables
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.runtime.Composable
 import de.rogallab.mobile.domain.utilities.logDebug
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
-suspend fun ShowErrorMessage(
+suspend fun showErrorMessage(
    snackbarHostState: SnackbarHostState, // State ↓
    errorMessage: String,                 // State ↓
    actionLabel: String?,                 // State ↓
    onErrorAction: () -> Unit             // Event ↑
 ) {
 
-   val tag = "ok>ShowErrorMessage   ."
+   val tag = "ok>showErrorMessage   ."
    logDebug(tag, "Start")
 
    val snackbarResult = snackbarHostState.showSnackbar(

@@ -58,8 +58,9 @@ class PeopleViewModel : ViewModel() {
    private var _errorMessage: String? by mutableStateOf(value = null)
    val errorMessage: String?
       get() = _errorMessage
-   fun onErrorMessage(value: String?, errorMessage: String?) {
+   fun onErrorMessage(value: String?, pErrorFrom: String?) {
       if(value != _errorMessage) _errorMessage = value
+      errorFrom = pErrorFrom
    }
    var errorFrom: String? = null
    // error handling

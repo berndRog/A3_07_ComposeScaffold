@@ -27,11 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,7 +41,7 @@ import de.rogallab.mobile.R
 import de.rogallab.mobile.domain.model.Person
 import de.rogallab.mobile.ui.navigation.NavScreen
 import de.rogallab.mobile.domain.utilities.logDebug
-import de.rogallab.mobile.ui.people.composables.ShowErrorMessage
+import de.rogallab.mobile.ui.people.composables.showErrorMessage
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -140,7 +136,7 @@ fun PeopleListScreen(
    viewModel.errorMessage?.let{
       if(viewModel.errorFrom == "PeopleListScreen" ) {
          LaunchedEffect(it) {
-            ShowErrorMessage(
+            showErrorMessage(
                snackbarHostState = snackbarHostState,
                errorMessage = it,
                actionLabel = "Abbrechen",
@@ -165,8 +161,6 @@ fun PersonListItem(
    //12345678901234567890123
    val tag = "ok>PersonListItem     ."
    logDebug(tag, "Person: $firstName $lastName")
-
-   var checked: Boolean by rememberSaveable { mutableStateOf(false) }
 
    Column {
 
