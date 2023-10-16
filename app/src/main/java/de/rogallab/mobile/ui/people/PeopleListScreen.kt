@@ -39,6 +39,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import de.rogallab.mobile.R
 import de.rogallab.mobile.domain.model.Person
+import de.rogallab.mobile.domain.utilities.as8
 import de.rogallab.mobile.ui.navigation.NavScreen
 import de.rogallab.mobile.domain.utilities.logDebug
 import de.rogallab.mobile.ui.people.composables.showErrorMessage
@@ -160,7 +161,7 @@ fun PersonListItem(
 ) {
    //12345678901234567890123
    val tag = "ok>PersonListItem     ."
-   logDebug(tag, "Person: $firstName $lastName")
+   logDebug(tag, "Person: $firstName $lastName ${id.as8()}")
 
    Column {
 
