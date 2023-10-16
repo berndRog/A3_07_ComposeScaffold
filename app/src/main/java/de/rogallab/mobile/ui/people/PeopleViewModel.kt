@@ -62,12 +62,13 @@ class PeopleViewModel : ViewModel() {
       if(value != _errorMessage) _errorMessage = value
       errorFrom = pErrorFrom
    }
-   var errorFrom: String? = null
    // error handling
    fun onErrorAction() {
       logDebug(tag, "onErrorAction()")
       // toDo
    }
+
+   var errorFrom: String? = null  // which screen has an error
 
    // lifecycle ViewModel
    override fun onCleared() {

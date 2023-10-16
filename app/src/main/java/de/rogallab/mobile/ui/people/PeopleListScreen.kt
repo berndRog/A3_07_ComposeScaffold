@@ -126,7 +126,7 @@ fun PeopleListScreen(
                   },
                ) // end personListItem
             }
-            viewModel.onErrorMessage("Fehler in LazyColumn", "PeopleListScreen")
+            // viewModel.onErrorMessage("Fehler in LazyColumn", "PeopleListScreen")
          }
       }
    ) // end Scaffold

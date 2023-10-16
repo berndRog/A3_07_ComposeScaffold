@@ -28,7 +28,7 @@ fun AppNavHost(
    val tag ="ok>AppNavHost         ."
 
    val navHostController: NavHostController = rememberNavController()
-   val duration  = 1000  // in ms
+   val duration  = 5000  // in ms
 
    // https://developer.android.com/jetpack/compose/animation/quick-guide
 
