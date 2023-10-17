@@ -79,6 +79,8 @@ fun PeopleListScreen(
          FloatingActionButton(
             containerColor = MaterialTheme.colorScheme.tertiary,
             onClick = {
+               // FAB clicked -> InputScreen initialized
+               viewModel.isInput = true
                logDebug(tag, "Forward Navigation: FAB clicked")
                // Navigate to 'PersonDetail' destination and put 'PeopleList' on the back stack
                navController.navigate(
@@ -117,7 +119,9 @@ fun PeopleListScreen(
                   email = person.email,
                   phone = person.phone,
                   imagePath = person.imagePath ?: "",
-                  onClick = { id -> // Event ↑  Row(task.id)
+                  onClick = { id ->
+                     // LazyColum item clicked -> DetailScreen initialized
+                     viewModel.isDetail = true
                      logDebug(tag, "Forward Navigation: Item clicked")
                      // Navigate to 'PersonDetail' destination and put 'PeopleList' on the back stack
                      navController.navigate(

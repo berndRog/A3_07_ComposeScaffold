@@ -54,6 +54,11 @@ class PeopleViewModel : ViewModel() {
    // mutabelList with observer
    val people: SnapshotStateList<Person> = mutableStateListOf<Person>()
 
+   // FAB clicked -> InputScreen initialized
+   var isInput = true
+   // LazyColum item clicked -> DetailScreen initialized
+   var isDetail = true
+
    // State errorMessage
    private var _errorMessage: String? by mutableStateOf(value = null)
    val errorMessage: String?
