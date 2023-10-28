@@ -72,7 +72,7 @@ fun PersonDetailScreen(
       enabled = true,
       onBack = {
          logInfo(tag, "Back Navigation (Abort)")
-         viewModel.setStateFromPerson(savedPerson, savedPerson.id)
+         viewModel.setStateFromPerson(savedPerson)
          // Navigate to 'PeopleList' destination and clear the back stack. As a
          // result, no further reverse navigation will be possible."
          navController.navigate(route = NavScreen.PeopleList.route) {

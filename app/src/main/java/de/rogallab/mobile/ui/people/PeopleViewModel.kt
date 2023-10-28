@@ -15,8 +15,6 @@ import java.util.UUID
 class PeopleViewModel : ViewModel() {
 
    private var _id: UUID = UUID.randomUUID()
-   val id
-      get() = _id
 
    // State = Observables (DataBinding)
    private var _firstName: String by mutableStateOf(value = "")
@@ -83,44 +81,47 @@ class PeopleViewModel : ViewModel() {
 
    fun readById(personId: UUID) {
       val person = people.first { it.id == personId }
-      setStateFromPerson(person, personId)
+      setStateFromPerson(person)
       logDebug(tag, "readbyId() ${person.asString()}")
    }
    fun add() {
       val person = getPersonFromState()
       logDebug(tag, "add() ${person.asString()}")
-      people.add(person)
+      if(people.firstOrNull{ it.id == person.id } == null) {
+         // no person found with same id
+         people.add(person)
+         clearState()
+      }
    }
+
    fun update() {
       val updatedPerson = getPersonFromState()
       val person = people.first { it.id == updatedPerson.id }
       people.remove(person)
       people.add(updatedPerson)
       logDebug(tag, "update() ${updatedPerson.asString()}")
-   }
-
-   fun setStateFromPerson(
-      person: Person?,
-      personId:UUID = UUID.randomUUID()
-   ) {
-      _id        = person?.id ?: UUIDEmpty
-      _firstName = person?.firstName ?: ""
-      _lastName  = person?.lastName ?: ""
-      _email     = person?.email
-      _phone     = person?.phone
-      _imagePath = person?.imagePath
+      clearState()
    }
 
    fun getPersonFromState(): Person =
       Person(_firstName, _lastName, _email, _phone, _imagePath, _id)
 
+   fun setStateFromPerson(person: Person?) {
+      _firstName = person?.firstName ?: ""
+      _lastName  = person?.lastName ?: ""
+      _email     = person?.email
+      _phone     = person?.phone
+      _imagePath = person?.imagePath
+      _id        = person?.id ?: UUIDEmpty
+   }
+
    fun clearState() {
-      _id        = UUID.randomUUID()
       _firstName = ""
       _lastName  = ""
       _email     = null
       _phone     = null
       _imagePath = null
+      _id        = UUID.randomUUID()
    }
 
    companion object {
