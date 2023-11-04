@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import de.rogallab.mobile.R
 import de.rogallab.mobile.domain.utilities.logDebug
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun InputNameMailPhone(
    firstName: String,                        // State ↓
@@ -39,10 +41,10 @@ fun InputNameMailPhone(
    onEmailChange: (String) -> Unit,          // Event ↑
    phone: String?,                           // State ↓
    onPhoneChange: (String) -> Unit,          // Event ↑
-
 ) {
 // val tag = "ok>InputNameMailPhone ."
 // val context = LocalContext.current
+
    val focusManager = LocalFocusManager.current
 
    val textFirstName = stringResource(R.string.firstName)
@@ -94,8 +96,8 @@ fun InputNameMailPhone(
                isErrorFirstName = e2
                errorTextFirstName = t2
             }
-            if(!isErrorFirstName)
-               focusManager.moveFocus(FocusDirection.Down)
+            if(!isErrorFirstName) focusManager.moveFocus(FocusDirection.Down)
+
          }
       ),
       isError = isErrorFirstName,

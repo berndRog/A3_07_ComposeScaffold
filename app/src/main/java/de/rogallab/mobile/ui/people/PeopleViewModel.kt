@@ -8,7 +8,6 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import de.rogallab.mobile.domain.model.Person
 import de.rogallab.mobile.domain.utilities.UUIDEmpty
-import de.rogallab.mobile.domain.utilities.as8
 import de.rogallab.mobile.domain.utilities.logDebug
 import java.util.UUID
 
@@ -21,7 +20,8 @@ class PeopleViewModel : ViewModel() {
    val firstName
       get() = _firstName
    fun onFirstNameChange(value: String) {
-      if(value != _firstName )  _firstName = value }
+      if(value != _firstName )  _firstName = value
+   }
 
    private var _lastName: String by mutableStateOf(value = "")
    val lastName
@@ -34,13 +34,15 @@ class PeopleViewModel : ViewModel() {
    val email
       get() = _email
    fun onEmailChange(value: String) {
-      if(value != _email )  _email = value }
+      if(value != _email )  _email = value
+   }
 
    private var _phone: String? by mutableStateOf(value = null)
    val phone
       get() = _phone
    fun onPhoneChange(value: String) {
-      if(value != _phone )  _phone = value }
+      if(value != _phone )  _phone = value
+   }
 
    private var _imagePath: String? by mutableStateOf(value = null)
    val imagePath
@@ -51,11 +53,6 @@ class PeopleViewModel : ViewModel() {
 
    // mutabelList with observer
    val people: SnapshotStateList<Person> = mutableStateListOf<Person>()
-
-   // FAB clicked -> InputScreen initialized
-   var isInput = true
-   // LazyColum item clicked -> DetailScreen initialized
-   var isDetail = true
 
    // State errorMessage
    private var _errorMessage: String? by mutableStateOf(value = null)
@@ -70,7 +67,6 @@ class PeopleViewModel : ViewModel() {
       logDebug(tag, "onErrorAction()")
       // toDo
    }
-
    var errorFrom: String? = null  // which screen has an error
 
    // lifecycle ViewModel
@@ -81,16 +77,16 @@ class PeopleViewModel : ViewModel() {
 
    fun readById(personId: UUID) {
       val person = people.first { it.id == personId }
-      setStateFromPerson(person)
       logDebug(tag, "readbyId() ${person.asString()}")
+      setStateFromPerson(person)
    }
+
    fun add() {
       val person = getPersonFromState()
       logDebug(tag, "add() ${person.asString()}")
       if(people.firstOrNull{ it.id == person.id } == null) {
          // no person found with same id
          people.add(person)
-         clearState()
       }
    }
 
@@ -100,7 +96,6 @@ class PeopleViewModel : ViewModel() {
       people.remove(person)
       people.add(updatedPerson)
       logDebug(tag, "update() ${updatedPerson.asString()}")
-      clearState()
    }
 
    fun getPersonFromState(): Person =
@@ -116,6 +111,7 @@ class PeopleViewModel : ViewModel() {
    }
 
    fun clearState() {
+      logDebug(tag, "clearState")
       _firstName = ""
       _lastName  = ""
       _email     = null
@@ -125,6 +121,6 @@ class PeopleViewModel : ViewModel() {
    }
 
    companion object {
-      private val tag:String = "ok>PeopleViewModel    ."
+      private val tag = "ok>PeopleViewModel    ."
    }
 }

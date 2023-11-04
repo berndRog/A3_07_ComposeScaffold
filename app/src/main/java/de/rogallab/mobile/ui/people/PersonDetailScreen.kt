@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,6 +35,7 @@ import de.rogallab.mobile.domain.utilities.logInfo
 import de.rogallab.mobile.ui.navigation.NavScreen
 import de.rogallab.mobile.ui.people.composables.InputNameMailPhone
 import de.rogallab.mobile.ui.people.composables.showErrorMessage
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,43 +45,31 @@ fun PersonDetailScreen(
    navController: NavController,
    viewModel: PeopleViewModel,
 ) {
-
-   val tag: String = "ok>PersonDetailScreen ."
-   logDebug(tag, "Start")
-   // viewModel.clear()
+   val tag = "ok>PersonDetailScreen ."
 
    var savedPerson by remember {
       mutableStateOf(Person("", ""))
    }
 
-   // The state in the view model, i.e. the values in the detail dialog
-   // may only be read if the detail dialog was started with a click
-   // on LazyColumn item in PeopleListScreen.
-   // If PersonInputScreen is called again after a restart, the input
-   // values in the dialogs should remain unchanged (undeleted)
-   if (viewModel.isDetail) {
-      viewModel.isDetail = false
-      id?.let {
+   id?.let {
+      // read during first composition only
+      LaunchedEffect(true) {
          logDebug(tag, "ReadById()")
          viewModel.readById(id)
-         savedPerson = viewModel.getPersonFromState()
-      } ?: run {
-         viewModel.onErrorMessage("Error reading the Person, id not found", "PersonDetailScreen")
       }
+      savedPerson = viewModel.getPersonFromState()
+   } ?: run {
+      viewModel.onErrorMessage("Error reading the Person, id not found", "PersonDetailScreen")
    }
 
    BackHandler(
       enabled = true,
       onBack = {
          logInfo(tag, "Back Navigation (Abort)")
-         viewModel.setStateFromPerson(savedPerson)
-         // Navigate to 'PeopleList' destination and clear the back stack. As a
-         // result, no further reverse navigation will be possible."
-         navController.navigate(route = NavScreen.PeopleList.route) {
-            popUpTo(route = NavScreen.PeopleList.route) {
-               inclusive = true
-            }
-         }
+         navController.popBackStack(
+            route = NavScreen.PeopleList.route,
+            inclusive = false
+         )
       }
    )
 
@@ -92,9 +82,15 @@ fun PersonDetailScreen(
             navigationIcon = {
                IconButton(onClick = {
                   logDebug(tag, "Navigation to Home and save changes")
-                  viewModel.update()
-                  navController.navigate(route = NavScreen.PeopleList.route) {
-                     popUpTo(route = NavScreen.PeopleList.route) { inclusive = true }
+                  if(viewModel.firstName.isEmpty() || viewModel.firstName.length < 2)
+                     viewModel.onErrorMessage( "FirstName ist zu kurz", "PersonInputScreen")
+                  else if(viewModel.lastName.isEmpty() || viewModel.lastName.length < 2)
+                     viewModel.onErrorMessage("LastName ist zu kurz", "PersonInputScreen")
+                  if(viewModel.errorMessage == null) {
+                     viewModel.update()
+                     navController.navigate(route = NavScreen.PeopleList.route) {
+                        popUpTo(route = NavScreen.PeopleList.route) { inclusive = true }
+                     }
                   }
                }) {
                   Icon(
@@ -118,7 +114,6 @@ fun PersonDetailScreen(
          Column(
             modifier = Modifier
                .padding(top = innerPadding.calculateTopPadding())
-//                .statusBarsPadding()
                .padding(horizontal = 16.dp)
                .fillMaxWidth()
                .verticalScroll(
@@ -145,9 +140,10 @@ fun PersonDetailScreen(
    // testing the snackbar
    // viewModel.onErrorMessage("Test SnackBar: Fehlermeldung ...", "PersonDetailScreen")
 
+   val coroutineScope = rememberCoroutineScope()
    viewModel.errorMessage?.let {
       if (viewModel.errorFrom == "PersonDetailScreen") {
-         LaunchedEffect(it) {
+         coroutineScope.launch {
             showErrorMessage(
                snackbarHostState = snackbarHostState,
                errorMessage = it,

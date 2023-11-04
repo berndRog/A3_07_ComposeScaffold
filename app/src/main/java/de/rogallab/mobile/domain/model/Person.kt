@@ -10,5 +10,5 @@ data class Person(
    val imagePath: String? = "",
    val id: UUID = UUID.randomUUID()
 ) {
-   fun asString() : String = "$firstName $lastName} ${id.as8()}"
+   fun asString() : String = "$firstName $lastName ${id.as8()}"
 }

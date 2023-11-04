@@ -18,7 +18,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -30,6 +29,7 @@ import de.rogallab.mobile.domain.utilities.logInfo
 import de.rogallab.mobile.ui.navigation.NavScreen
 import de.rogallab.mobile.ui.people.composables.InputNameMailPhone
 import de.rogallab.mobile.ui.people.composables.showErrorMessage
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,31 +38,16 @@ fun PersonInputScreen(
    viewModel: PeopleViewModel
 ) {
    val tag = "ok>PersonInputScreen  ."
-
-   // The state in the view model, i.e. the values in the input dialogs
-   // may only be deleted if the input dialog was started with the FAB
-   // in PeopleListScreen.
-   // If PersonInputScreen is called again after a restart, the input
-   // values in the dialogs should remain unchanged (undeleted)
-   if(viewModel.isInput) {
-      viewModel.isInput = false
-      viewModel.clearState()
-   }
+   val coroutineScope = rememberCoroutineScope()
 
    BackHandler(
       enabled = true,
       onBack = {
          logInfo(tag, "Back Navigation (Abort)")
-         viewModel.clearState()
-         // Navigate to 'PeopleList' destination and clear the back stack. As a
-         // result, no further reverse navigation will be possible."
-         navController.navigate(
-            route = NavScreen.PeopleList.route
-         ) {
-            popUpTo(route = NavScreen.PeopleList.route) {
-               inclusive = true
-            }
-         }
+         navController.popBackStack(
+            route = NavScreen.PeopleList.route,
+            inclusive = false
+         )
       }
    )
 
@@ -74,9 +59,16 @@ fun PersonInputScreen(
             title = { Text(stringResource(R.string.person_input)) },
             navigationIcon = {
                IconButton(onClick = {
-                  viewModel.add()
-                  navController.navigate(route = NavScreen.PeopleList.route) {
-                     popUpTo(route = NavScreen.PeopleList.route) { inclusive = true }
+                  logInfo(tag, "Up (reverse) navigation + viewModel.add()")
+                  if(viewModel.firstName.isEmpty() || viewModel.firstName.length < 2)
+                     viewModel.onErrorMessage( "FirstName ist zu kurz", "PersonInputScreen")
+                  else if(viewModel.lastName.isEmpty() || viewModel.lastName.length < 2)
+                     viewModel.onErrorMessage("LastName ist zu kurz", "PersonInputScreen")
+                  if(viewModel.errorMessage == null) {
+                     viewModel.add()
+                     navController.navigate(route = NavScreen.PeopleList.route) {
+                        popUpTo(route = NavScreen.PeopleList.route) { inclusive = true }
+                     }
                   }
                }) {
                   Icon(imageVector = Icons.Default.ArrowBack,
@@ -92,8 +84,7 @@ fun PersonInputScreen(
                actionOnNewLine = true
             )
          }
-      },
-      content = { innerPadding ->
+      }) { innerPadding ->
 
          Column(
             modifier = Modifier
@@ -105,29 +96,25 @@ fun PersonInputScreen(
          ) {
 
             InputNameMailPhone(
-               firstName = viewModel.firstName,                          // State ↓
-               onFirstNameChange = { viewModel.onFirstNameChange(it) },  // Event ↑
-               lastName = viewModel.lastName,                            // State ↓
-               onLastNameChange = { viewModel.onLastNameChange(it) },    // Event ↑
-               email = viewModel.email,                                  // State ↓
-               onEmailChange = { viewModel.onEmailChange(it) },          // Event ↑
-               phone = viewModel.phone,                                  // State ↓
-               onPhoneChange = { viewModel.onPhoneChange(it) }           // Event ↑
+               firstName = viewModel.firstName,                    // State ↓
+               onFirstNameChange = viewModel::onFirstNameChange,   // Event ↑
+               lastName = viewModel.lastName,                      // State ↓
+               onLastNameChange =  viewModel::onLastNameChange,    // Event ↑
+               email = viewModel.email,                            // State ↓
+               onEmailChange = viewModel::onEmailChange,           // Event ↑
+               phone = viewModel.phone,                            // State ↓
+               onPhoneChange = viewModel::onPhoneChange            // Event ↑
             )
          }
       }
-   )
-   val coroutineScope = rememberCoroutineScope()
-   // testing the snackbar
-   // viewModel.onErrorMessage("Test SnackBar: Fehlermeldung ...","PersonInputScreen")
 
    viewModel.errorMessage?.let {
       if(viewModel.errorFrom == "PersonInputScreen" ) {
-         LaunchedEffect(it) {
+         coroutineScope.launch {
             showErrorMessage(
                snackbarHostState = snackbarHostState,
                errorMessage = it,
-               actionLabel = "ToDo",
+               actionLabel = "Verstanden",
                onErrorAction = { viewModel.onErrorAction() }
             )
          }

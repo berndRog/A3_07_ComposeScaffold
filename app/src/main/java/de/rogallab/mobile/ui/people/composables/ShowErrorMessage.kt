@@ -6,20 +6,19 @@ import androidx.compose.material3.SnackbarResult
 import de.rogallab.mobile.domain.utilities.logDebug
 
 suspend fun showErrorMessage(
-   snackbarHostState: SnackbarHostState, // State ↓
-   errorMessage: String,                 // State ↓
-   actionLabel: String?,                 // State ↓
-   onErrorAction: () -> Unit             // Event ↑
+   snackbarHostState: SnackbarHostState,                     // State ↓
+   errorMessage: String,                                     // State ↓
+   actionLabel: String?,                                     // State ↓
+   duration: SnackbarDuration = SnackbarDuration.Long,       // State ↓
+   onErrorAction: () -> Unit                                 // Event ↑
 ) {
-
    val tag = "ok>showErrorMessage   ."
-   logDebug(tag, "Start")
 
    val snackbarResult = snackbarHostState.showSnackbar(
       message = errorMessage,
       actionLabel = actionLabel,
       withDismissAction = false,
-      duration = SnackbarDuration.Short
+      duration = duration
    )
    if (snackbarResult == SnackbarResult.ActionPerformed) {
          logDebug(tag,"SnackbarResult.ActionPerformed")

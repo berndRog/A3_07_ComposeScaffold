@@ -39,9 +39,9 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import de.rogallab.mobile.R
 import de.rogallab.mobile.domain.model.Person
-import de.rogallab.mobile.domain.utilities.as8
-import de.rogallab.mobile.ui.navigation.NavScreen
 import de.rogallab.mobile.domain.utilities.logDebug
+import de.rogallab.mobile.domain.utilities.logInfo
+import de.rogallab.mobile.ui.navigation.NavScreen
 import de.rogallab.mobile.ui.people.composables.showErrorMessage
 import java.util.UUID
 
@@ -52,9 +52,7 @@ fun PeopleListScreen(
    navController: NavController,
    viewModel: PeopleViewModel
 ) {
-
-   val tag: String = "ok>PeopleListScreen   ."
-
+   val tag = "ok>PeopleListScreen   ."
    val snackbarHostState = remember { SnackbarHostState() }
 
    Scaffold(
@@ -65,7 +63,7 @@ fun PeopleListScreen(
                val activity = LocalContext.current as Activity
                IconButton(
                   onClick = {
-                     logDebug(tag, "Lateral Navigation: finish app")
+                     logInfo(tag, "Lateral Navigation: finish app")
                      // Finish the app
                      activity.finish()
                   }) {
@@ -80,12 +78,10 @@ fun PeopleListScreen(
             containerColor = MaterialTheme.colorScheme.tertiary,
             onClick = {
                // FAB clicked -> InputScreen initialized
-               viewModel.isInput = true
-               logDebug(tag, "Forward Navigation: FAB clicked")
+               viewModel.clearState()
+               logInfo(tag, "Forward Navigation: FAB clicked")
                // Navigate to 'PersonDetail' destination and put 'PeopleList' on the back stack
-               navController.navigate(
-                  route = NavScreen.PersonInput.route
-               )
+               navController.navigate(route = NavScreen.PersonInput.route)
             }
          ) {
             Icon(Icons.Default.Add, "Add a contact")
@@ -93,47 +89,38 @@ fun PeopleListScreen(
       },
       snackbarHost = {
          SnackbarHost(hostState = snackbarHostState) { data ->
-            Snackbar(
-               snackbarData = data,
-               actionOnNewLine = true
-            )
-         }
-      },
-      content = { innerPadding ->
-
-         LazyColumn(
-            modifier = Modifier
-               .padding(top = innerPadding.calculateTopPadding())
-               .padding(bottom = innerPadding.calculateBottomPadding())
-               .padding(horizontal = 8.dp),
-            state = rememberLazyListState()
-         ) {
-            items(
-               items = viewModel.people.toList(),
-               key = { person: Person -> person.id }
-            ) { person ->
-               PersonListItem(
-                  id = person.id,
-                  firstName = person.firstName,
-                  lastName = person.lastName,
-                  email = person.email,
-                  phone = person.phone,
-                  imagePath = person.imagePath ?: "",
-                  onClick = { id ->
-                     // LazyColum item clicked -> DetailScreen initialized
-                     viewModel.isDetail = true
-                     logDebug(tag, "Forward Navigation: Item clicked")
-                     // Navigate to 'PersonDetail' destination and put 'PeopleList' on the back stack
-                     navController.navigate(
-                        route = NavScreen.PersonDetail.route + "/$id"
-                     )
-                  },
-               ) // end personListItem
-            }
-            // viewModel.onErrorMessage("Fehler in LazyColumn", "PeopleListScreen")
+            Snackbar(snackbarData = data, actionOnNewLine = true)
          }
       }
-   ) // end Scaffold
+   ) { innerPadding ->
+      LazyColumn(
+         modifier = Modifier
+            .padding(top = innerPadding.calculateTopPadding())
+            .padding(bottom = innerPadding.calculateBottomPadding())
+            .padding(horizontal = 8.dp),
+         state = rememberLazyListState()
+      ) {
+         items(
+            items = viewModel.people.toList(),
+            key = { person: Person -> person.id }
+         ) { person ->
+            PersonListItem(
+               id = person.id,
+               firstName = person.firstName,
+               lastName = person.lastName,
+               email = person.email,
+               phone = person.phone,
+               imagePath = person.imagePath ?: "",
+               onClick = { id ->
+                  // LazyColum item clicked -> DetailScreen initialized
+                  logInfo(tag, "Forward Navigation: Item clicked")
+                  // Navigate to 'PersonDetail' destination and put 'PeopleList' on the back stack
+                  navController.navigate(route = NavScreen.PersonDetail.route + "/$id")
+               },
+            )
+         }
+      }
+   }
 
    // testing the snackbar
    // viewModel.onErrorMessage("Test SnackBar: Fehlermeldung ...","PeopleListScreen")
@@ -165,10 +152,8 @@ fun PersonListItem(
 ) {
    //12345678901234567890123
    val tag = "ok>PersonListItem     ."
-   logDebug(tag, "Person: $firstName $lastName ${id.as8()}")
 
    Column {
-
       Row(
          verticalAlignment = Alignment.CenterVertically,
          modifier = Modifier

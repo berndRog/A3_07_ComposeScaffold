@@ -91,7 +91,7 @@ dependencies {
 
    // Navigation
    // https://developer.android.com/jetpack/androidx/releases/navigation
-   val navigation = "2.7.4"
+   val navigation = "2.7.5"
    implementation( "androidx.navigation:navigation-ui-ktx:$navigation")
    implementation("androidx.navigation:navigation-compose:$navigation")
    // Jetpack Compose Integration
@@ -105,7 +105,7 @@ dependencies {
 
    // Image loading
    // https://coil-kt.github.io/coil/
-   val coilCompose = "2.4.0"
+   val coilCompose = "2.5.0"
    implementation("io.coil-kt:coil-compose:$coilCompose")
 
    // TESTS -----------------------
