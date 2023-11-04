@@ -80,7 +80,7 @@ fun PeopleListScreen(
                // FAB clicked -> InputScreen initialized
                viewModel.clearState()
                logInfo(tag, "Forward Navigation: FAB clicked")
-               // Navigate to 'PersonDetail' destination and put 'PeopleList' on the back stack
+               // Navigate to PersonDetail and put PeopleList on the back stack
                navController.navigate(route = NavScreen.PersonInput.route)
             }
          ) {
@@ -162,39 +162,24 @@ fun PersonListItem(
                onClick(id)  // Event ↑
             }
       ) {
-         Row {
-            Column(modifier = Modifier.weight(0.85f)) {
+         Column {
+            Text(
+               text = "$firstName $lastName",
+               style = MaterialTheme.typography.bodyLarge,
+            )
+            email?.let {
                Text(
-                  text = "$firstName $lastName",
-                  style = MaterialTheme.typography.bodyLarge,
+                  modifier = Modifier.padding(top = 4.dp),
+                  text = it,
+                  style = MaterialTheme.typography.bodyMedium
                )
-               email?.let {
-                  Text(
-                     modifier = Modifier.padding(top = 4.dp),
-                     text = it,
-                     style = MaterialTheme.typography.bodyMedium
-                  )
-               }
-               phone?.let {
-                  Text(
-                     text = phone,
-                     style = MaterialTheme.typography.bodyMedium,
-                     modifier = Modifier
-                  )
-               }
             }
-            Column(modifier = Modifier.weight(0.15f)) {
-               imagePath?.let { path: String ->                  // State ↓
-                  AsyncImage(
-                     model = path,
-                     contentDescription = "Bild der Person",
-                     modifier = Modifier
-                        .size(width = 60.dp, height = 75.dp)
-                        .clip(RoundedCornerShape(percent = 5)),
-                     alignment = Alignment.Center,
-                     contentScale = ContentScale.Crop
-                  )
-               }
+            phone?.let {
+               Text(
+                  text = phone,
+                  style = MaterialTheme.typography.bodyMedium,
+                  modifier = Modifier
+               )
             }
          }
       }

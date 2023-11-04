@@ -26,8 +26,6 @@ fun AppNavHost(
    val navHostController: NavHostController = rememberNavController()
    val duration = 800  // in ms
 
-   // https://developer.android.com/jetpack/compose/animation/quick-guide
-
    NavHost(
       navController = navHostController,
       startDestination = NavScreen.PeopleList.route,
