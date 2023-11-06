@@ -2,7 +2,7 @@ package de.rogallab.mobile
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.MaterialTheme
@@ -12,9 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import de.rogallab.mobile.ui.navigation.AppNavHost
+import de.rogallab.mobile.ui.people.PeopleViewModel
 import de.rogallab.mobile.ui.theme.AppTheme
 
 class MainActivity : BaseActivity(tag) {
+
+   val viewModel: PeopleViewModel by viewModels()
+
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
 
@@ -23,12 +27,11 @@ class MainActivity : BaseActivity(tag) {
 
       setContent {
          AppTheme {
-            Surface(modifier = Modifier.fillMaxSize(),
+            Surface(modifier = Modifier.fillMaxSize()
+                                       .safeDrawingPadding(),
                color = MaterialTheme.colorScheme.background
             ){
-               Box(Modifier.safeDrawingPadding()) {
-                  AppNavHost()
-               }
+               AppNavHost(viewModel)
             }
          }
       }

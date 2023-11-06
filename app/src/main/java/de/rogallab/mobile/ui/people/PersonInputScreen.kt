@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -28,6 +29,7 @@ import de.rogallab.mobile.R
 import de.rogallab.mobile.domain.utilities.logInfo
 import de.rogallab.mobile.ui.navigation.NavScreen
 import de.rogallab.mobile.ui.people.composables.InputNameMailPhone
+import de.rogallab.mobile.ui.people.composables.checkInput
 import de.rogallab.mobile.ui.people.composables.showErrorMessage
 import kotlinx.coroutines.launch
 
@@ -38,6 +40,7 @@ fun PersonInputScreen(
    viewModel: PeopleViewModel
 ) {
    val tag = "ok>PersonInputScreen  ."
+   val context = LocalContext.current
    val coroutineScope = rememberCoroutineScope()
 
    BackHandler(
@@ -60,10 +63,7 @@ fun PersonInputScreen(
             navigationIcon = {
                IconButton(onClick = {
                   logInfo(tag, "Up (reverse) navigation + viewModel.add()")
-                  if(viewModel.firstName.isEmpty() || viewModel.firstName.length < 2)
-                     viewModel.onErrorMessage( "FirstName ist zu kurz", "PersonInputScreen")
-                  else if(viewModel.lastName.isEmpty() || viewModel.lastName.length < 2)
-                     viewModel.onErrorMessage("LastName ist zu kurz", "PersonInputScreen")
+                  checkInput(context, viewModel,"PersonInputScreen")
                   if(viewModel.errorMessage == null) {
                      viewModel.add()
                      navController.navigate(route = NavScreen.PeopleList.route) {
